@@ -2,23 +2,24 @@ import fs from 'fs'
 import chalk from "chalk"
 import { ILinks } from './interface/ILinks'
 
-async function lerArquivo(caminho: string) {
+async function listarLinks(caminho: string): Promise<ILinks[] | string | null> {
 	let encode: BufferEncoding = 'utf-8'
 	try {
 		let texto = await fs.promises.readFile(caminho, encode)
-		extrairLinks(texto)
+		return extrairLinks(texto)
 	} catch (error: any) {
 		tratarErro(error.message)
+		return null
 	}
 }
 
-function extrairLinks(texto: string) {
+function extrairLinks(texto: string): ILinks[] | string {
 	let regex: RegExp = /\[([^[\]]*?)\]\((https?:\/*[^\s?#.].[^\s]*)\)/gm
 	let capturas = [...texto.matchAll(regex)]
 	return montarLinks(capturas)
 }
 
-function montarLinks(capturas: RegExpMatchArray[]): ILinks[] {
+function montarLinks(capturas: RegExpMatchArray[]): ILinks[] | string {
 	let links: ILinks[] = []
 
 	capturas.forEach(captura => {
@@ -28,11 +29,11 @@ function montarLinks(capturas: RegExpMatchArray[]): ILinks[] {
 		})
 	})
 
-	return links
+	return links.length > 0 ? links: 'Não há links no arquivo'
 }
 
 function tratarErro(mensagem: string) {
 	throw new Error(chalk.red(mensagem))
 }
 
-lerArquivo('./arquivos/texto.md')
+export default listarLinks
