@@ -8,7 +8,6 @@ async function listarLinks(caminho) {
     }
     catch (error) {
         tratarErro(error.message);
-        return null;
     }
 }
 function extrairLinks(texto) {

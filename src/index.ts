@@ -2,14 +2,13 @@ import fs from 'fs'
 import chalk from "chalk"
 import { ILinks } from './interface/ILinks'
 
-async function listarLinks(caminho: string): Promise<ILinks[] | string | null> {
+async function listarLinks(caminho: string) {
 	let encode: BufferEncoding = 'utf-8'
 	try {
 		let texto = await fs.promises.readFile(caminho, encode)
 		return extrairLinks(texto)
 	} catch (error: any) {
 		tratarErro(error.message)
-		return null
 	}
 }
 
